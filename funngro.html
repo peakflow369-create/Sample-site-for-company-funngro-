@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en-IN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Funngro: real freelance projects for teenagers in India</title>
+<meta name="description" content="Funngro connects teenagers in India with real companies for paid freelance projects in writing, design, marketing and more. Parents join in from day one.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23A99BFF' stroke-width='5'/%3E%3Ccircle cx='24' cy='9' r='4' fill='%236FE3D2'/%3E%3C/svg%3E">
+
+<!--
+=====================================================================
+FUNNGRO SAMPLE SITE: NOTES FOR WHOEVER TAKES THIS LIVE
+ * Every value with a dotted underline is SAMPLE DATA (fake CIN, GSTIN, address,
+   phone, example.com emails, fictional brands, invented stories). Swap them for
+   verified details before publishing. Never publish a testimonial or logo
+   without written permission.
+ * This site speaks to teenagers, so it is built around the DPDP Act, 2023
+   rules for children (under 18): a parent or guardian gives consent, there is
+   no profiling and no advertising. Have a lawyer confirm the final wording.
+ * Fill CONFIG at the top of the <script> (form endpoint, analytics, status feed).
+ * FONTS: no third-party font request is made on purpose (it would send visitors'
+   IP addresses to Google before consent). Self-host Plus Jakarta Sans or Inter.
+=====================================================================
+-->
+
+<script>
+/* Set the saved theme before first paint to avoid a flash. Falls back to dark. */
+try { document.documentElement.dataset.theme = localStorage.getItem('fg_theme') || 'dark'; } catch (e) {}
+</script>
+
+<style>
+/* ---------- Design tokens ---------- */
+:root{
+  --font:"Plus Jakarta Sans","Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r-lg:28px; --r:20px; --r-sm:12px;
+  --maxw:1180px;
+}
+/* Dark (default). Text pairs checked against WCAG: body text > 12:1, muted text > 8:1 */
+[data-theme="dark"]{
+  --bg:#070916; --bg-2:#0E1228;
+  --text:#F3F4FF; --muted:#C7CCE8;
+  --glass:rgba(255,255,255,.07); --glass-strong:rgba(255,255,255,.12); --glass-solid:#151a36;
+  --line:rgba(255,255,255,.18); --line-strong:#8E95BE;
+  --accent:#A99BFF; --accent-2:#6FE3D2;
+  --btn-bg:linear-gradient(135deg,#B6AAFF,#7BE8D8); --btn-fg:#0A0C1E;
+  --glow:rgba(140,120,255,.55);
+  --focus:#FFD36E; --ok:#7DE7A8; --warn:#FFC46B; --bad:#FF9A9A;
+  --input-bg:rgba(255,255,255,.06);
+  --shadow:0 20px 60px -24px rgba(0,0,0,.7);
+  --mesh:
+    radial-gradient(60rem 40rem at 12% -8%,rgba(139,124,255,.34),transparent 60%),
+    radial-gradient(50rem 36rem at 92% 6%,rgba(52,211,190,.20),transparent 60%),
+    radial-gradient(46rem 30rem at 55% 108%,rgba(255,120,170,.15),transparent 60%);
+}
+[data-theme="light"]{
+  --bg:#F4F5FD; --bg-2:#E8EAFA;
+  --text:#11132B; --muted:#41476A;
+  --glass:rgba(255,255,255,.72); --glass-strong:rgba(255,255,255,.9); --glass-solid:#FFFFFF;
+  --line:rgba(17,19,43,.16); --line-strong:#5A6088;
+  --accent:#4B3FE0; --accent-2:#0B7A6E;
+  --btn-bg:#3B2FD6; --btn-fg:#FFFFFF;
+  --glow:rgba(75,63,224,.35);
+  --focus:#2418B0; --ok:#0B6B3A; --warn:#8A5200; --bad:#A31F1F;
+  --input-bg:#FFFFFF;
+  --shadow:0 20px 50px -26px rgba(40,40,110,.35);
+  --mesh:
+    radial-gradient(60rem 40rem at 12% -8%,rgba(139,124,255,.28),transparent 60%),
+    radial-gradient(50rem 36rem at 92% 6%,rgba(52,211,190,.22),transparent 60%),
+    radial-gradient(46rem 30rem at 55% 108%,rgba(255,150,190,.18),transparent 60%);
+}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:6rem;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-size:1.0625rem;line-height:1.65;background:var(--bg);color:var(--text);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--mesh);pointer-events:none}
+img,svg{max-width:100%;display:block}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{line-height:1.12;letter-spacing:-.025em;text-wrap:balance}
+p{text-wrap:pretty}
+a{color:var(--accent);text-underline-offset:.2em}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.container{width:min(100% - 2rem,var(--maxw));margin-inline:auto}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:1rem;top:-6rem;z-index:100;background:var(--btn-fg);color:var(--btn-bg);padding:.8rem 1.2rem;border-radius:999px;font-weight:700}
+.skip:focus{top:1rem;color:#fff;background:#11132B;outline:3px solid var(--focus)}
+
+.glass{
+  background:var(--glass);border:1px solid var(--line);border-radius:var(--r);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.08);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:var(--glass-solid)}}
+@media (prefers-contrast:more){.glass{background:var(--glass-solid);border-color:var(--line-strong)}}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;min-width:48px;padding:.7rem 1.4rem;border-radius:999px;border:1px solid transparent;font:inherit;font-weight:700;line-height:1.2;text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s}
+.btn-primary{background:var(--btn-bg);color:var(--btn-fg);box-shadow:0 10px 34px -10px var(--glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -8px var(--glow)}
+.btn-ghost{background:var(--glass);color:var(--text);border-color:var(--line-strong)}
+.btn-ghost:hover{background:var(--glass-strong)}
+.btn-sm{min-height:44px;padding:.5rem 1.1rem}
+.icon-btn{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:var(--glass);color:var(--text);cursor:pointer}
+.icon-btn:hover{background:var(--glass-strong)}
+
+/* ---------- Header ---------- */
+.site-header{position:sticky;top:0;z-index:50;padding-top:.75rem}
+.bar{display:flex;align-items:center;gap:.75rem;padding:.5rem .6rem .5rem 1rem;border-radius:999px;position:relative}
+.logo{display:inline-flex;align-items:center;gap:.55rem;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:var(--text);text-decoration:none;min-height:44px}
+.logo svg{width:30px;height:30px}
+.nav{display:none;position:absolute;left:0;right:0;top:calc(100% + .5rem);flex-direction:column;gap:.25rem;padding:.75rem;border-radius:var(--r);margin:0;list-style:none;background:var(--glass-solid);border:1px solid var(--line);box-shadow:var(--shadow)}
+.nav.open{display:flex}
+.nav a{display:flex;align-items:center;min-height:48px;padding:.4rem 1rem;border-radius:var(--r-sm);color:var(--text);font-weight:600;text-decoration:none}
+.nav a:hover{background:var(--glass-strong)}
+.nav .nav-cta{margin-top:.25rem}
+.bar-actions{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+.header-cta{display:none}
+@media (min-width:520px){.header-cta{display:inline-flex}}
+@media (min-width:900px){
+  .menu-btn{display:none}
+  .nav{display:flex;position:static;flex-direction:row;padding:0;background:none;border:0;box-shadow:none;margin-left:1.5rem;gap:.25rem}
+  .nav .nav-cta{display:none}
+}
+
+/* ---------- Sections ---------- */
+section{padding-block:clamp(3rem,7vw,5.5rem)}
+.section-head{max-width:46rem;margin-bottom:2.5rem}
+.section-head h2{font-size:clamp(1.9rem,4.2vw,3rem);font-weight:800}
+.section-head p{margin-top:1rem;color:var(--muted);max-width:60ch}
+
+/* ---------- Hero ---------- */
+.hero{padding-top:clamp(2rem,5vw,4rem)}
+.hero-grid{display:grid;gap:2.5rem;align-items:center}
+@media (min-width:960px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:3rem}}
+.hero h1{font-size:clamp(2.5rem,6.4vw,4.6rem);font-weight:800;letter-spacing:-.04em;max-width:15ch}
+.hero .sub{margin-top:1.4rem;font-size:clamp(1.1rem,2vw,1.3rem);color:var(--muted);max-width:50ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2rem}
+.fine{margin-top:1.1rem;font-size:.95rem;color:var(--muted);max-width:50ch}
+
+/* 3D stage: CSS 3D transforms only (no WebGL, no third-party script) so it stays light on low-end phones */
+.stage{position:relative;height:clamp(380px,62vw,520px);perspective:1400px;display:grid;place-items:center;touch-action:pan-y;border-radius:var(--r-lg);cursor:grab}
+.scene{position:relative;width:min(380px,84%);height:340px;transform-style:preserve-3d;transform:rotateX(10deg) rotateY(-16deg);will-change:transform}
+.pane{position:absolute;padding:1rem 1.1rem;background:var(--glass-strong);border:1px solid var(--line);border-radius:var(--r);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 30px 60px -28px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.14)}
+@supports not (backdrop-filter:blur(1px)){.pane{background:var(--glass-solid)}}
+.pane-main{left:0;top:30px;width:100%;height:250px;transform:translateZ(0)}
+.pane-flow{right:-7%;bottom:-10px;width:80%;transform:translateZ(90px)}
+.pane-chip{left:-9%;top:-6px;display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem .55rem .7rem;border-radius:999px;transform:translateZ(150px);font-weight:700;font-size:.95rem}
+.bob{animation:bob 6s ease-in-out infinite}
+.pane-flow .bob{animation-duration:7.5s;animation-delay:-2s}
+.pane-chip .bob{animation-duration:5s;animation-delay:-1s;display:flex;align-items:center;gap:.5rem}
+@keyframes bob{50%{transform:translateY(-9px)}}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 30%,#fff 0,var(--accent) 34%,#3A2BC4 78%);box-shadow:0 0 44px var(--glow)}
+.orb-a{width:64px;height:64px;right:4%;top:-22px;transform:translateZ(190px)}
+.orb-b{width:30px;height:30px;left:6%;bottom:30px;transform:translateZ(120px);background:radial-gradient(circle at 32% 30%,#fff 0,var(--accent-2) 40%,#0B6B60 80%);box-shadow:0 0 30px rgba(111,227,210,.5)}
+.ring{position:absolute;left:-14%;right:-14%;top:12%;bottom:-6%;border:2px solid var(--line-strong);border-radius:50%;opacity:.55;transform:translateZ(-70px) rotateX(72deg);animation:spin 28s linear infinite}
+@keyframes spin{to{transform:translateZ(-70px) rotateX(72deg) rotateZ(360deg)}}
+.scene.paused *{animation-play-state:paused!important}
+.mini-head{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.95rem;gap:.5rem}
+.tag{display:inline-block;padding:.1rem .6rem;border-radius:999px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:600;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:.5rem;height:112px;margin-top:1.2rem}
+.bars span{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--accent),var(--accent-2));min-height:12px}
+.pane-stats{display:flex;gap:1.4rem;margin-top:1rem}
+.pane-stats b{display:block;font-size:1.3rem;letter-spacing:-.02em}
+.pane-stats small{color:var(--muted);font-size:.85rem}
+.flow-mini{display:flex;align-items:center;gap:.4rem;margin-top:.6rem;font-size:.82rem;font-weight:600}
+.flow-mini i{flex:1;height:2px;background:var(--line-strong);border-radius:2px;min-width:10px}
+.flow-mini span{padding:.25rem .6rem;border-radius:999px;border:1px solid var(--line-strong);background:var(--glass)}
+
+/* Ticker */
+.ticker-wrap{margin-top:clamp(2.5rem,6vw,4rem)}
+.ticker-top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.ticker-top p{color:var(--muted);font-weight:600}
+.ticker{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.track{display:flex;width:max-content;animation:scroll 45s linear infinite}
+.ticker.paused .track,.ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
+.set{display:flex;gap:1rem;padding:0 1rem 0 0;margin:0;list-style:none}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.logo-slot{display:flex;align-items:center;gap:.6rem;min-width:200px;padding:.8rem 1.1rem;border:1px solid var(--line-strong);border-radius:var(--r-sm);color:var(--muted);font-weight:600;background:var(--glass)}
+.logo-slot svg{width:22px;height:22px;flex:none}
+.caption{margin-top:.8rem;font-size:.9rem;color:var(--muted)}
+
+/* ---------- Bento (3 x 3) ---------- */
+.bento{display:grid;gap:1rem;grid-template-columns:1fr}
+@media (min-width:900px){
+  .bento{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,minmax(190px,auto));
+    grid-template-areas:"wf wf code" "ap sc code" "ac lg al"}
+  .c-wf{grid-area:wf}.c-code{grid-area:code}.c-ap{grid-area:ap}.c-sc{grid-area:sc}.c-ac{grid-area:ac}.c-lg{grid-area:lg}.c-al{grid-area:al}
+}
+.cell{position:relative;padding:1.4rem;overflow:hidden;display:flex;flex-direction:column;gap:.9rem;transition:border-color .25s,transform .25s}
+.cell::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(260px circle at var(--mx,50%) var(--my,0%),rgba(169,155,255,.20),transparent 70%)}
+.cell:hover::before,.cell:focus-within::before{opacity:1}
+.cell:hover{border-color:var(--accent)}
+.cell h3{font-size:1.2rem;font-weight:800}
+.cell p{color:var(--muted);font-size:1rem}
+.cell>*{position:relative}
+.flow{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;list-style:none;margin:auto 0 0;padding:0}
+.flow li{display:flex;align-items:center;gap:.6rem}
+.flow li+li::before{content:"";width:22px;height:2px;background:var(--line-strong);border-radius:2px}
+.flow span{padding:.5rem .9rem;border-radius:999px;border:1px solid var(--line-strong);background:var(--glass);font-weight:600;font-size:.95rem;transition:background .3s,border-color .3s,box-shadow .3s}
+.c-wf:hover .flow span{background:rgba(169,155,255,.2);border-color:var(--accent);box-shadow:0 0 22px -4px var(--glow)}
+.c-wf .flow li:nth-child(2) span{transition-delay:.12s}.c-wf .flow li:nth-child(3) span{transition-delay:.24s}.c-wf .flow li:nth-child(4) span{transition-delay:.36s}
+.code{margin:auto 0 0;padding:1rem;border-radius:var(--r-sm);background:#0A0D22;color:#E8EAFF;font:.86rem/1.7 var(--mono);overflow-x:auto;border:1px solid rgba(255,255,255,.14)}
+.code code{font:inherit}
+.k{color:#8FE9DA}.s{color:#FFD58A}.n{color:#FFB894}.cm{color:#A9AFD2}
+.code .hl{display:inline-block;transition:background .3s}
+.c-code:hover .code .hl{background:rgba(169,155,255,.24)}
+.mock{margin-top:auto;display:grid;gap:.5rem;font-size:.92rem;font-weight:600}
+.mock .row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.5rem .8rem;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--line)}
+.chip{display:inline-flex;align-items:center;gap:.35rem;padding:.1rem .6rem;border-radius:999px;border:1px solid currentColor;font-size:.82rem;font-weight:700}
+.chip.ok{color:var(--ok)}.chip.warn{color:var(--warn)}.chip.bad{color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto}
+.chips span{padding:.35rem .8rem;border-radius:999px;border:1px solid var(--line-strong);background:var(--glass);font-weight:600;font-size:.92rem}
+
+/* ---------- Demo ---------- */
+.demo{padding:1rem}
+@media (min-width:700px){.demo{padding:1.5rem}}
+.tablist{display:flex;gap:.4rem;padding:.35rem;border-radius:999px;background:var(--glass);border:1px solid var(--line);width:fit-content;max-width:100%;overflow-x:auto}
+.tab{min-height:44px;padding:.5rem 1.1rem;border-radius:999px;border:0;background:transparent;color:var(--text);font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--btn-bg);color:var(--btn-fg)}
+.tab:not([aria-selected="true"]):hover{background:var(--glass-strong)}
+.panel{margin-top:1.2rem}
+.panel:focus-visible{border-radius:var(--r-sm)}
+.sample{display:inline-block;margin-bottom:1rem}
+.kpis{display:grid;gap:.8rem;grid-template-columns:1fr}
+@media (min-width:600px){.kpis{grid-template-columns:repeat(3,1fr)}}
+.kpi{padding:1rem 1.2rem;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--line)}
+.kpi b{display:block;font-size:2rem;letter-spacing:-.03em;line-height:1.2;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:.95rem}
+.chart{margin-top:1rem;padding:1rem;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--line)}
+.chart svg{width:100%;height:auto}
+.table-wrap{overflow-x:auto;border-radius:var(--r-sm);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.98rem}
+caption{text-align:left;padding:.8rem 1rem;font-weight:700}
+th,td{text-align:left;padding:.75rem 1rem;border-top:1px solid var(--line)}
+th{color:var(--muted);font-weight:700;font-size:.92rem}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+.log li{display:flex;gap:1rem;padding:.7rem 1rem;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--line)}
+.log time{color:var(--muted);font-variant-numeric:tabular-nums;flex:none;font-weight:600}
+
+/* ROI */
+.roi{display:grid;gap:1.2rem;margin-top:1.5rem}
+@media (min-width:900px){.roi{grid-template-columns:1fr 1fr}}
+.roi-card{padding:1.5rem}
+.results{grid-template-columns:1fr}
+@media (min-width:520px){.results{grid-template-columns:1fr 1fr}}
+.roi-card h3{font-size:1.3rem;font-weight:800;margin-bottom:1rem}
+.field{margin-bottom:1.1rem}
+.field label,.field .lbl{display:block;font-weight:700;margin-bottom:.35rem}
+.hint{display:block;color:var(--muted);font-size:.92rem;margin-top:.3rem}
+input[type=text],input[type=email],input[type=number],select{width:100%;min-height:48px;padding:.65rem .9rem;border-radius:var(--r-sm);border:2px solid var(--line-strong);background:var(--input-bg);color:var(--text);font:inherit}
+input[type=range]{width:100%;min-height:48px;accent-color:var(--accent)}
+input[aria-invalid="true"]{border-color:var(--bad)}
+.range-row{display:flex;align-items:center;gap:1rem}
+.range-row output{min-width:3.5ch;font-weight:800;font-variant-numeric:tabular-nums}
+.results{display:grid;gap:.8rem}
+.result{padding:1rem 1.2rem;border-radius:var(--r-sm);background:var(--glass-strong);border:1px solid var(--line)}
+.result b{display:block;font-size:clamp(1.8rem,4vw,2.5rem);letter-spacing:-.03em;line-height:1.15;font-variant-numeric:tabular-nums}
+.result span{color:var(--muted)}
+
+/* ---------- Stories (placeholders) ---------- */
+.stories{display:grid;gap:1rem}
+@media (min-width:800px){.stories{grid-template-columns:repeat(3,1fr)}}
+.story{padding:1.4rem;border:1px solid var(--line-strong);border-radius:var(--r);background:var(--glass)}
+.story h3{font-size:1.1rem;font-weight:800;margin-bottom:.6rem}
+.story ul{margin:.6rem 0 0;padding-left:1.2rem;color:var(--muted)}
+
+/* ---------- Pricing ---------- */
+.billing{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-bottom:2rem;font-weight:700}
+.switch{position:relative;width:64px;height:36px;border-radius:999px;border:2px solid var(--line-strong);background:var(--glass);cursor:pointer;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--btn-bg);transition:transform .2s}
+.switch[aria-checked="true"]::after{transform:translateX(28px)}
+.save{color:var(--ok);font-weight:700}
+.plans{display:grid;gap:1.2rem;align-items:stretch}
+@media (min-width:900px){.plans{grid-template-columns:repeat(3,1fr);align-items:center}}
+.plan{padding:1.8rem;display:flex;flex-direction:column;gap:1rem;height:100%}
+.plan.popular{border:2px solid var(--accent);box-shadow:0 30px 80px -30px var(--glow),var(--shadow)}
+@media (min-width:900px){.plan.popular{padding-block:2.4rem}}
+.badge{align-self:flex-start;padding:.2rem .8rem;border-radius:999px;background:var(--btn-bg);color:var(--btn-fg);font-weight:800;font-size:.88rem}
+.plan h3{font-size:1.4rem;font-weight:800}
+.price{font-size:clamp(2.2rem,4vw,2.9rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;font-variant-numeric:tabular-nums}
+.per{color:var(--muted);font-size:.95rem}
+.plan ul{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;flex:1}
+.plan li{display:flex;gap:.6rem;align-items:flex-start}
+.plan li svg{width:20px;height:20px;flex:none;margin-top:.2rem;color:var(--ok)}
+.tax{margin-top:1.2rem;color:var(--muted);font-size:.95rem}
+
+/* ---------- Footer ---------- */
+.site-footer{padding-block:3rem 2rem;border-top:1px solid var(--line);background:linear-gradient(180deg,transparent,rgba(0,0,0,.18))}
+[data-theme="light"] .site-footer{background:linear-gradient(180deg,transparent,rgba(17,19,43,.05))}
+.foot-grid{display:grid;gap:2rem}
+@media (min-width:800px){.foot-grid{grid-template-columns:1.4fr 1fr 1fr}}
+.site-footer h2{font-size:1rem;font-weight:800;margin-bottom:.8rem;letter-spacing:0}
+.site-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.1rem}
+.site-footer li a,.link-btn{display:inline-flex;align-items:center;min-height:44px;color:var(--text)}
+.link-btn{background:none;border:0;padding:0;font:inherit;text-decoration:underline;text-underline-offset:.2em;cursor:pointer}
+.biz{font-style:normal;color:var(--muted);display:grid;gap:.4rem;font-size:.98rem}
+.biz dt{font-weight:700;color:var(--text);font-size:.92rem}
+.biz dd{margin:0 0 .5rem}
+.ph{border-bottom:2px dotted var(--line-strong);color:inherit}
+.foot-badges{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem;align-items:center}
+.badge-link{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;padding:.4rem 1rem;border-radius:999px;border:1px solid var(--line-strong);background:var(--glass);color:var(--text);font-weight:700;text-decoration:none;font-size:.95rem}
+.badge-link:hover{background:var(--glass-strong)}
+.badge-link svg{width:20px;height:20px;color:var(--accent-2)}
+.dot{width:12px;height:12px;flex:none;background:var(--muted)}
+.badge-link[data-state="ok"] .dot{background:var(--ok);border-radius:50%}
+.badge-link[data-state="warn"] .dot{background:var(--warn);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.badge-link[data-state="bad"] .dot{background:var(--bad);border-radius:2px}
+.badge-link[data-state="unknown"] .dot{background:transparent;border:2px solid var(--muted);border-radius:50%}
+.copy{margin-top:1.5rem;color:var(--muted);font-size:.92rem}
+
+/* ---------- Cookie banner ---------- */
+.cookie{position:fixed;z-index:80;left:1rem;right:1rem;bottom:1rem;max-width:720px;max-height:85vh;overflow:auto;padding:1.3rem;background:var(--glass-solid);border:1px solid var(--line-strong);border-radius:var(--r);box-shadow:0 30px 80px -20px rgba(0,0,0,.7)}
+@media (min-width:760px){.cookie{left:1.5rem;right:auto;bottom:1.5rem}}
+.cookie h2{font-size:1.15rem;font-weight:800;margin-bottom:.5rem}
+.cookie p{color:var(--muted);font-size:.98rem}
+.cookie-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.cookie fieldset{margin:1rem 0 0;padding:0;border:0;display:grid;gap:.8rem}
+.cookie legend{font-weight:800;margin-bottom:.5rem}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:.8rem 1rem;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--glass)}
+.opt input{width:24px;height:24px;margin:.15rem 0 0;accent-color:var(--accent)}
+.opt b{display:block}
+.opt span{color:var(--muted);font-size:.93rem}
+
+/* ---------- Dialog ---------- */
+dialog{width:min(520px,calc(100vw - 2rem));max-height:calc(100vh - 2rem);padding:0;border:0;background:transparent;color:var(--text);overflow:auto}
+dialog::backdrop{background:rgba(3,4,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.dlg{padding:1.6rem;background:var(--glass-solid);border:1px solid var(--line-strong);border-radius:var(--r-lg);position:relative}
+.dlg h2{font-size:1.6rem;font-weight:800;padding-right:3rem}
+.dlg .lead{color:var(--muted);margin:.6rem 0 1.3rem}
+.dlg-close{position:absolute;top:.8rem;right:.8rem}
+.consent{display:grid;grid-template-columns:auto 1fr;gap:.8rem;margin-bottom:1rem;align-items:start}
+.consent input{width:24px;height:24px;margin:.2rem 0 0;accent-color:var(--accent)}
+.consent label{font-size:.97rem}
+.err{color:var(--bad);font-weight:600;font-size:.93rem;margin-top:.3rem}
+.notice{font-size:.9rem;color:var(--muted);margin-top:1rem}
+.plan-note{display:inline-block;margin-bottom:1rem}
+
+/* ---------- Reduced motion & small screens ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .bob,.ring,.track{animation:none!important}
+  .btn,.cell,.switch::after{transition:none}
+  .track{flex-wrap:wrap;width:auto}
+  .set[aria-hidden="true"]{display:none}
+  .ticker{-webkit-mask-image:none;mask-image:none}
+}
+@media (max-width:420px){.pane-chip{left:-2%}.pane-flow{right:-3%}}
+</style>
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<!-- Cookie banner sits early in the DOM so keyboard users reach it straight after the skip link. -->
+<section id="cookie-banner" class="cookie" role="dialog" aria-modal="false" aria-labelledby="ck-title" aria-describedby="ck-desc" hidden>
+  <h2 id="ck-title" tabindex="-1">Your privacy choices</h2>
+  <p id="ck-desc">Funngro is for teenagers, so we keep this simple: no advertising cookies and no profiling. We always store two small things on your device, your cookie choice and your light or dark setting. Optional analytics counts page visits and stays off until you say yes. You can change your mind any time from "Cookie settings" in the footer. Read our <a href="/cookie-policy.html">Cookie Policy</a> and <a href="/privacy-policy.html">Privacy Policy</a>.</p>
+
+  <div id="ck-settings" hidden>
+    <fieldset>
+      <legend>Choose what we may use</legend>
+      <div class="opt">
+        <input type="checkbox" id="ck-necessary" checked disabled aria-describedby="ck-necessary-d">
+        <div><label for="ck-necessary"><b>Essential (always on)</b></label><span id="ck-necessary-d">Remembers your cookie choice and your theme. The site cannot work as intended without these.</span></div>
+      </div>
+      <div class="opt">
+        <input type="checkbox" id="ck-analytics" aria-describedby="ck-analytics-d">
+        <div><label for="ck-analytics"><b>Analytics (optional)</b></label><span id="ck-analytics-d">Counts page visits so we can improve the site. Provider: <span class="ph">Sample Analytics Co.</span>. Data: pages viewed and device type, with IP address anonymised. Kept for <span class="ph">12 months</span>. Processed in <span class="ph">India</span>. Never used for advertising.</span></div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="cookie-actions">
+    <button type="button" class="btn btn-ghost" id="ck-reject">Reject optional</button>
+    <button type="button" class="btn btn-ghost" id="ck-accept">Accept all</button>
+    <button type="button" class="btn btn-ghost" id="ck-toggle" aria-expanded="false" aria-controls="ck-settings">Choose settings</button>
+    <button type="button" class="btn btn-primary" id="ck-save" hidden>Save my choices</button>
+  </div>
+</section>
+
+<header class="site-header">
+  <div class="container">
+    <div class="bar glass">
+      <a class="logo" href="#top" aria-label="Funngro, back to top">
+        <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="11" fill="none" stroke="var(--accent)" stroke-width="5"/><circle cx="24" cy="9" r="4" fill="var(--accent-2)"/></svg>
+        Funngro
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav" id="primary-nav">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#demo">Demo</a></li>
+          <li><a href="#roi">Earnings planner</a></li>
+          <li><a href="#stories">Stories</a></li>
+          <li><a href="#pricing">For companies</a></li>
+          <li class="nav-cta"><button type="button" class="btn btn-primary" style="width:100%" data-open-demo>Get started</button></li>
+        </ul>
+      </nav>
+      <div class="bar-actions">
+        <button type="button" class="icon-btn" id="theme-toggle" aria-label="Switch to light mode">
+          <svg id="icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg id="icon-moon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button type="button" class="btn btn-primary btn-sm header-cta" data-open-demo>Get started</button>
+        <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <h1 id="hero-title">Your first real projects start here.</h1>
+          <p class="sub">Funngro connects teenagers in India with real companies for paid freelance projects in writing, design, marketing and more. Build a profile, take on a project, and earn your own money.</p>
+          <div class="cta-row">
+            <button type="button" class="btn btn-primary" data-open-demo>Get started</button>
+            <a class="btn btn-ghost" href="#demo">See how it works</a>
+          </div>
+          <p class="fine">Under 18? Ask a parent or guardian to sign you up. India's data protection law (DPDP Act, 2023) needs their consent. We ask for a name and an email only.</p>
+        </div>
+
+        <div>
+          <div class="stage" id="stage" tabindex="0" role="group" aria-label="Interactive 3D preview of the Funngro app" aria-describedby="stage-help">
+            <p class="sr-only" id="stage-help">Decorative preview showing a sample earnings card, a three-step project flow and a payment message floating in 3D. Move your pointer, drag, or use the arrow keys to tilt it. Press Escape to reset.</p>
+            <div class="scene" id="scene" aria-hidden="true">
+              <div class="ring"></div>
+              <div class="pane pane-main"><div class="bob">
+                <div class="mini-head"><span>Earned this month</span><span class="tag">Sample data</span></div>
+                <div class="bars"><span style="height:38%"></span><span style="height:52%"></span><span style="height:46%"></span><span style="height:70%"></span><span style="height:62%"></span><span style="height:84%"></span><span style="height:96%"></span></div>
+                <div class="pane-stats"><div><b>&#8377;4,500</b><small>from 6 projects</small></div><div><b>3</b><small>skills listed</small></div></div>
+              </div></div>
+              <div class="pane pane-flow"><div class="bob">
+                <div class="mini-head"><span>Your next project</span></div>
+                <div class="flow-mini"><span>Apply</span><i></i><span>Deliver</span><i></i><span>Get paid</span></div>
+              </div></div>
+              <div class="pane pane-chip"><div class="bob">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                Payment received
+              </div></div>
+              <div class="orb orb-a"></div>
+              <div class="orb orb-b"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trusted brand ticker: SAMPLE brands. -->
+      <div class="ticker-wrap">
+        <div class="ticker-top">
+          <p id="ticker-title">Companies that post projects (fictional sample brands)</p>
+          <button type="button" class="btn btn-ghost btn-sm" id="ticker-toggle" aria-pressed="false">Pause scrolling logos</button>
+        </div>
+        <div class="ticker" id="ticker" role="region" aria-labelledby="ticker-title">
+          <div class="track">
+            <ul class="set"><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Orchard &amp; Co</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Bluepeak Media</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Tiffin Tales</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Lumen Labs</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Paperkite</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Greenfold Studio</li></ul>
+            <ul class="set" aria-hidden="true"><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"  focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Orchard &amp; Co</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"  focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Bluepeak Media</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"  focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Tiffin Tales</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"  focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Lumen Labs</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"  focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Paperkite</li><li class="logo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"  focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></svg>Greenfold Studio</li></ul>
+          </div>
+        </div>
+        <p class="caption">These brand names are invented for this mockup. Show a real company only with its written permission.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BENTO FEATURES ================= -->
+  <section id="features" aria-labelledby="features-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="features-title">Learn it, do it, get paid for it</h2>
+        <p>Funngro is built around real projects, not pretend ones. Here is what a teenager and their family get.</p>
+      </div>
+
+      <div class="bento">
+        <article class="cell glass c-wf">
+          <h3>From first look to first payment</h3>
+          <p>Browse projects from companies, send a short pitch, do the work, and get paid. Each step is clear, so you always know what comes next.</p>
+          <ol class="flow" aria-label="The steps, in order: Find a project, Send your pitch, Deliver the work, Get paid">
+            <li><span>Find a project</span></li>
+            <li><span>Send your pitch</span></li>
+            <li><span>Deliver the work</span></li>
+            <li><span>Get paid</span></li>
+          </ol>
+        </article>
+
+        <article class="cell glass c-code">
+          <h3>Post a project</h3>
+          <p>Companies describe the job in a short brief. This is an example request, shown for illustration.</p>
+          <pre class="code" tabindex="0" aria-label="Example project brief, scrollable"><code><span class="cm">// Example project brief</span>
+<span class="k">POST</span> /v1/<span class="hl">projects</span>
+
+{
+  <span class="k">"title"</span>: <span class="s">"Design 3 social posts"</span>,
+  <span class="k">"category"</span>: <span class="s">"design"</span>,
+  <span class="k">"fee_inr"</span>: <span class="n">1500</span>,
+  <span class="k">"deadline"</span>: <span class="s">"2026-11-15"</span>,
+  <span class="k">"for_teens"</span>: <span class="n">true</span>
+}
+
+<span class="cm">// Response</span>
+<span class="n">201</span> Created</code></pre>
+        </article>
+
+        <article class="cell glass c-ap">
+          <h3>Parents stay in the loop</h3>
+          <p>A parent or guardian agrees to the account and can see which projects are taken on.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="row"><span>Logo design</span><span class="chip ok">Agreed</span></div>
+            <div class="row"><span>Blog writing</span><span class="chip warn">Waiting</span></div>
+          </div>
+        </article>
+
+        <article class="cell glass c-sc">
+          <h3>Skill learning</h3>
+          <p>Short programmes to build the skills projects ask for.</p>
+          <div class="chips" aria-hidden="true"><span>Writing</span><span>Design</span><span>Marketing</span></div>
+        </article>
+
+        <article class="cell glass c-ac">
+          <h3>Your profile</h3>
+          <p>Show what you are good at, with samples of your work.</p>
+          <div class="chips" aria-hidden="true"><span>Skills</span><span>Work samples</span><span>Languages</span></div>
+        </article>
+
+        <article class="cell glass c-lg">
+          <h3>Earnings history</h3>
+          <p>See every project and what it paid.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="row"><span>Poster design</span><span class="chip ok">&#8377;900 paid</span></div>
+            <div class="row"><span>Product blurbs</span><span class="chip warn">In review</span></div>
+          </div>
+        </article>
+
+        <article class="cell glass c-al">
+          <h3>Payouts</h3>
+          <p>Money goes to the bank account or wallet you link.</p>
+          <div class="chips" aria-hidden="true"><span>Bank account</span><span>Wallet</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INTERACTIVE DEMO ================= -->
+  <section id="demo" aria-labelledby="demo-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="demo-title">Take a look inside the app</h2>
+        <p>Switch between views of a sample teen workspace. Every project, name and number here is made up for illustration.</p>
+      </div>
+
+      <div class="demo glass">
+        <div class="tablist" role="tablist" aria-label="App views">
+          <button class="tab" role="tab" id="tab-projects" aria-selected="true" aria-controls="panel-projects">Find projects</button>
+          <button class="tab" role="tab" id="tab-work" aria-selected="false" aria-controls="panel-work" tabindex="-1">My work</button>
+          <button class="tab" role="tab" id="tab-earn" aria-selected="false" aria-controls="panel-earn" tabindex="-1">Earnings</button>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-projects" aria-labelledby="tab-projects" tabindex="0">
+          <span class="tag sample">Sample data</span>
+          <div class="table-wrap" role="region" aria-label="Sample projects table, scrollable" tabindex="0">
+            <table>
+              <caption>Open sample projects</caption>
+              <thead><tr><th scope="col">Project</th><th scope="col">Type</th><th scope="col">Fee</th><th scope="col">Deadline</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Write 5 product blurbs</th><td>Writing</td><td>&#8377;750</td><td>In 5 days</td></tr>
+                <tr><th scope="row">Design 3 social posts</th><td>Design</td><td>&#8377;1,500</td><td>In 8 days</td></tr>
+                <tr><th scope="row">Collect 20 survey replies</th><td>Marketing</td><td>&#8377;600</td><td>In 6 days</td></tr>
+                <tr><th scope="row">Edit a 60-second reel</th><td>Video</td><td>&#8377;1,200</td><td>In 10 days</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-work" aria-labelledby="tab-work" tabindex="0" hidden>
+          <span class="tag sample">Sample data</span>
+          <ul class="log">
+            <li><time>Today</time><span>Poster draft sent to the company for review</span></li>
+            <li><time>Mon</time><span>Parent agreed to the "Product blurbs" project</span></li>
+            <li><time>Sun</time><span>Pitch sent for "Design 3 social posts"</span></li>
+            <li><time>Fri</time><span>Payment of &#8377;900 received for "Poster design"</span></li>
+          </ul>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-earn" aria-labelledby="tab-earn" tabindex="0" hidden>
+          <span class="tag sample">Sample data</span>
+          <div class="kpis">
+            <div class="kpi"><b data-count="4500" data-fmt="inr">&#8377;4,500</b><span>Earned this month</span></div>
+            <div class="kpi"><b data-count="6" data-fmt="int">6</b><span>Projects finished</span></div>
+            <div class="kpi"><b data-count="750" data-fmt="inr">&#8377;750</b><span>Average project fee</span></div>
+          </div>
+          <div class="chart">
+            <svg viewBox="0 0 600 190" role="img" aria-label="Line chart of sample monthly earnings, rising over six months">
+              <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".45"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+              <g stroke="var(--line)" stroke-width="1"><path d="M0 40H600M0 90H600M0 140H600"/></g>
+              <path d="M0 160 L120 140 L240 146 L360 100 L480 82 L600 40 L600 190 L0 190Z" fill="url(#area)"/>
+              <path d="M0 160 L120 140 L240 146 L360 100 L480 82 L600 40" fill="none" stroke="var(--accent-2)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EARNINGS PLANNER ================= -->
+  <section id="roi" aria-labelledby="roi-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="roi-title">Plan your earnings</h2>
+        <p>Try your own numbers and see what a month of projects could add up to. It all runs in your browser, and nothing you type is sent anywhere.</p>
+      </div>
+
+      <div class="roi">
+        <div class="roi-card glass">
+          <h3>Your numbers</h3>
+          <div class="field">
+            <label for="roi-props">Pitches you send each month</label>
+            <input type="number" id="roi-props" inputmode="numeric" min="0" max="1000" value="10">
+          </div>
+          <div class="field">
+            <label for="roi-share">Share that become projects</label>
+            <div class="range-row"><input type="range" id="roi-share" min="10" max="90" step="5" value="30" aria-describedby="roi-share-hint"><output for="roi-share" id="roi-share-out">30%</output></div>
+            <span class="hint" id="roi-share-hint">Not every pitch is accepted, so start low.</span>
+          </div>
+          <div class="field">
+            <label for="roi-fee">Fee for one project (&#8377;)</label>
+            <input type="number" id="roi-fee" inputmode="numeric" min="0" max="1000000" value="800">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="roi-hours">Hours one project takes</label>
+            <input type="number" id="roi-hours" inputmode="decimal" min="0" max="500" step="0.5" value="4">
+          </div>
+        </div>
+
+        <div class="roi-card glass">
+          <h3>Your estimate</h3>
+          <div class="results">
+            <div class="result"><b id="out-won" data-v="0">0</b><span>projects won each month</span></div>
+            <div class="result"><b id="out-hour" data-v="0">&#8377;0</b><span>earned per hour of work</span></div>
+            <div class="result"><b id="out-month" data-v="0">&#8377;0</b><span>earned each month</span></div>
+            <div class="result"><b id="out-year" data-v="0">&#8377;0</b><span>earned each year</span></div>
+          </div>
+          <p class="hint" style="margin-top:1rem">This is a planner based only on the numbers you entered. It is not a promise of earnings.</p>
+          <p class="sr-only" id="roi-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STORIES (SAMPLE) ================= -->
+  <section id="stories" aria-labelledby="stories-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="stories-title">Stories</h2>
+        <p>The three stories below are invented for this mockup and are marked as samples. A live site must show only real feedback from people who agreed in writing.</p>
+      </div>
+      <div class="stories">
+        <article class="story"><span class="tag">Sample story, not a real review</span><h3 style="margin-top:.8rem">A teen designer, age 16</h3><p>"I never thought a poster I made for fun would get me paid. Now I know what a client brief looks like."</p></article>
+        <article class="story"><span class="tag">Sample story, not a real review</span><h3 style="margin-top:.8rem">A parent</h3><p>"I could see each project before my daughter said yes. That made it easy for me to say yes too."</p></article>
+        <article class="story"><span class="tag">Sample story, not a real review</span><h3 style="margin-top:.8rem">A small company</h3><p>"We posted a short brief and had three blog drafts to choose from within a week."</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRICING (SAMPLE) ================= -->
+  <section id="pricing" aria-labelledby="pricing-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="pricing-title">For companies and schools</h2>
+        <p>Post projects, or run Funngro as a programme for a class or club. These plans and prices are sample content for this mockup.</p>
+      </div>
+
+      <div class="billing">
+        <span id="bill-m">Monthly</span>
+        <button type="button" class="switch" id="billing-switch" role="switch" aria-checked="false" aria-label="Bill yearly"></button>
+        <span id="bill-y">Yearly</span>
+        <span class="save" id="save-note">Pay for 10 months, get 12</span>
+      </div>
+
+      <div class="plans">
+        <article class="plan glass" aria-labelledby="plan-starter">
+          <h3 id="plan-starter">Starter</h3>
+          <p>For a small business trying Funngro.</p>
+          <div><div class="price" data-monthly="1499">&#8377;1,499</div><div class="per">per month</div></div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Up to 3 projects a month</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Writing, design and marketing briefs</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Email support</li>
+          </ul>
+          <button type="button" class="btn btn-ghost" data-open-demo data-plan="Starter">Choose Starter</button>
+        </article>
+
+        <article class="plan glass popular" aria-labelledby="plan-growth">
+          <span class="badge">Most popular</span>
+          <h3 id="plan-growth">Growth</h3>
+          <p>For companies that post work every month.</p>
+          <div><div class="price" data-monthly="4999">&#8377;4,999</div><div class="per">per month</div></div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Up to 15 projects a month</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Priority matching with teen freelancers</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Project history and invoices</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Priority support</li>
+          </ul>
+          <button type="button" class="btn btn-primary" data-open-demo data-plan="Growth">Choose Growth</button>
+        </article>
+
+        <article class="plan glass" aria-labelledby="plan-school">
+          <h3 id="plan-school">Schools</h3>
+          <p>For a class, club or after-school programme.</p>
+          <div><div class="price" data-monthly="9999">&#8377;9,999</div><div class="per">per month</div></div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>A programme for up to 100 students</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Teacher view of progress</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Skill learning sessions</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Onboarding call</li>
+          </ul>
+          <button type="button" class="btn btn-ghost" data-open-demo data-plan="Schools">Choose Schools</button>
+        </article>
+      </div>
+      <p class="tax">Sample prices are shown before GST.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h2>About and registered business details</h2>
+        <p class="biz" style="margin-bottom:1rem">Funngro is based in Mumbai and was co-founded by Payal Jain and Anik Jain. It connects teenagers with companies for paid freelance projects.</p>
+        <address class="biz">
+          <dl style="margin:0">
+            <dt>Legal name</dt><dd><span class="ph">Funngro Sample Pvt. Ltd.</span></dd>
+            <dt>Registration number (CIN) and GSTIN</dt><dd><span class="ph">U00000MH2021PTC000000</span> and <span class="ph">27AAAAA0000A1Z5</span></dd>
+            <dt>Registered office</dt><dd><span class="ph">000 Sample Road, Navi Mumbai, Maharashtra 400000, India</span></dd>
+            <dt>Support</dt><dd><span class="ph">support@example.com</span>, <span class="ph">+91 00000 00000</span>, <span class="ph">Monday to Friday, 10:00 to 18:00 IST</span></dd>
+            <dt>Grievance Officer (data protection)</dt><dd><span class="ph">Sample Name</span>, <span class="ph">grievance@example.com</span></dd>
+          </dl>
+        </address>
+        <p class="caption">Values with a dotted underline are sample data for this mockup. Replace them with the company's verified details before launch.</p>
+      </div>
+
+      <nav aria-label="Explore">
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#demo">Demo</a></li>
+          <li><a href="#roi">Earnings planner</a></li>
+          <li><a href="#pricing">For companies</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Legal">
+        <h2>Legal</h2>
+        <ul>
+          <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="/terms-and-conditions.html">Terms &amp; Conditions</a></li>
+          <li><a href="/cookie-policy.html">Cookie Policy</a></li>
+          <li><a href="/refund-cancellation-policy.html">Refund &amp; Cancellation Policy</a></li>
+          <li><button type="button" class="link-btn" id="open-cookie-settings">Cookie settings</button></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="foot-badges">
+      <!-- Describe yourself as "compliant" only after your DPDP Act obligations are actually met. -->
+      <a class="badge-link" href="/privacy-policy.html#your-rights">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5L15.5 10"/></svg>
+        DPDP Act 2023: your data rights
+      </a>
+      <a class="badge-link" id="status-link" href="/status" data-state="unknown">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="status-text" role="status">System status: checking</span>
+      </a>
+    </div>
+
+    <p class="copy">&copy; <span id="year">2026</span> <span class="ph">Funngro Sample Pvt. Ltd.</span> All rights reserved. This is a sample site built for demonstration.</p>
+  </div>
+</footer>
+
+<!-- ================= DEMO REQUEST DIALOG ================= -->
+<dialog id="demo-dialog" aria-labelledby="dlg-title" aria-describedby="dlg-lead">
+  <div class="dlg">
+    <button type="button" class="icon-btn dlg-close" id="dlg-close" aria-label="Close the sign-up form">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <div id="dlg-form-wrap">
+      <h2 id="dlg-title">Get started</h2>
+      <p class="lead" id="dlg-lead">Under 18? Please ask a parent or guardian to fill this in. India's data protection law (DPDP Act, 2023) needs their consent.</p>
+      <span class="tag plan-note" id="plan-note" hidden></span>
+
+      <form id="demo-form" novalidate>
+        <div class="field">
+          <label for="f-role">I am (required)</label>
+          <select id="f-role" name="role" required aria-describedby="err-role">
+            <option value="">Choose one</option>
+            <option value="parent">A parent or guardian of a teen under 18</option>
+            <option value="adult">A teen aged 18 or older</option>
+            <option value="org">A company, brand or school</option>
+          </select>
+          <p class="err" id="err-role" hidden></p>
+        </div>
+        <div class="field">
+          <label for="f-name">Your full name (required)</label>
+          <input type="text" id="f-name" name="name" autocomplete="name" required aria-describedby="err-name">
+          <p class="err" id="err-name" hidden></p>
+        </div>
+        <div class="field">
+          <label for="f-email">Your email (required)</label>
+          <input type="email" id="f-email" name="email" autocomplete="email" required aria-describedby="err-email">
+          <p class="err" id="err-email" hidden></p>
+        </div>
+
+        <div class="consent">
+          <input type="checkbox" id="f-consent" name="consent" required aria-describedby="err-consent">
+          <label for="f-consent">I agree that <span class="ph">Funngro Sample Pvt. Ltd.</span> may use my name and email to contact me about getting started. <span id="consent-extra"></span>I can withdraw this consent at any time by writing to <span class="ph">support@example.com</span>. (required)</label>
+        </div>
+        <p class="err" id="err-consent" hidden style="margin:-.5rem 0 1rem"></p>
+
+        <div class="consent">
+          <input type="checkbox" id="f-marketing" name="marketing" aria-describedby="f-marketing-d">
+          <label for="f-marketing">Send me occasional news by email. <span id="f-marketing-d" class="hint" style="display:inline">(optional, you can say no and still get started)</span></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%" id="f-submit">Send my details</button>
+        <p class="notice">We collect only your name, email and who you are, and use them only for the purposes above. We do not track or profile children, and we do not show them advertising. Read the <a href="/privacy-policy.html">Privacy Policy</a> to learn how long we keep your data, how to access, correct or erase it, and how to reach our Grievance Officer.</p>
+      </form>
+    </div>
+
+    <div id="dlg-done" hidden>
+      <h2 id="dlg-done-title" tabindex="-1">Details received</h2>
+      <p class="lead" id="dlg-done-msg"></p>
+      <button type="button" class="btn btn-ghost" id="dlg-done-close">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<p class="sr-only" id="sr-live" aria-live="polite"></p>
+<noscript><p style="position:fixed;bottom:0;left:0;right:0;padding:1rem;background:#11132B;color:#fff;text-align:center">Some interactive parts of this page need JavaScript. The content is still readable, and no analytics runs without it.</p></noscript>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   CONFIG: fill these in. Leave a value empty to keep that feature off.
+   ===================================================================== */
+const CONFIG = {
+  policyVersion: '2026-10-08',                // bump when your privacy policy changes; stored with each consent
+  analyticsSrc: '',                           // e.g. a privacy-friendly analytics script URL. Loaded ONLY after consent.
+  analyticsDomain: '',                        // e.g. 'yourdomain.in' (if your provider needs it)
+  formEndpoint: '',                           // your HTTPS endpoint that receives the demo request (POST, JSON)
+  statusApiUrl: '',                           // e.g. 'https://status.yourdomain.in/api/v2/status.json' (Statuspage format)
+  statusPageUrl: ''                           // public status page URL for the footer link
+};
+
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+const live = $('#sr-live');
+const announce = (msg) => { live.textContent = ''; setTimeout(() => { live.textContent = msg; }, 50); };
+
+/* Small storage helper: works even where localStorage is blocked. */
+const store = (() => {
+  const mem = {};
+  return {
+    get(k){ try { return localStorage.getItem(k); } catch (e) { return k in mem ? mem[k] : null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } }
+  };
+})();
+
+/* ---------- Theme ---------- */
+const root = document.documentElement;
+const themeBtn = $('#theme-toggle');
+function applyTheme(t){
+  root.dataset.theme = t;
+  themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  $('#icon-sun').hidden = t !== 'dark';
+  $('#icon-moon').hidden = t === 'dark';
+}
+applyTheme(root.dataset.theme || 'dark');
+themeBtn.addEventListener('click', () => {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next); store.set('fg_theme', next);
+});
+
+/* ---------- Mobile menu ---------- */
+const menuBtn = $('#menu-btn'), nav = $('#primary-nav');
+function setMenu(open){
+  nav.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+}
+menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+nav.addEventListener('click', (e) => { if (e.target.closest('a, button')) setMenu(false); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menuBtn.focus(); }
+});
+
+/* ---------- Footer year ---------- */
+$('#year').textContent = new Date().getFullYear();
+
+/* ---------- Ticker pause (WCAG 2.2.2) ---------- */
+const ticker = $('#ticker'), tickBtn = $('#ticker-toggle');
+tickBtn.addEventListener('click', () => {
+  const paused = ticker.classList.toggle('paused');
+  tickBtn.setAttribute('aria-pressed', String(paused));
+  tickBtn.textContent = paused ? 'Play scrolling logos' : 'Pause scrolling logos';
+});
+if (reduce.matches) { tickBtn.hidden = true; }
+
+/* ---------- 3D hero: pointer, touch-drag and keyboard tilt ---------- */
+(() => {
+  const stage = $('#stage'), scene = $('#scene');
+  const REST = { rx: 10, ry: -16 };
+  const cur = { ...REST }, tar = { ...REST };
+  let raf = 0;
+  const paint = () => { scene.style.transform = `rotateX(${cur.rx.toFixed(2)}deg) rotateY(${cur.ry.toFixed(2)}deg)`; };
+  function frame(){
+    cur.rx += (tar.rx - cur.rx) * 0.12;
+    cur.ry += (tar.ry - cur.ry) * 0.12;
+    paint();
+    if (Math.abs(tar.rx - cur.rx) > 0.02 || Math.abs(tar.ry - cur.ry) > 0.02) raf = requestAnimationFrame(frame);
+    else { cur.rx = tar.rx; cur.ry = tar.ry; paint(); raf = 0; }
+  }
+  const kick = () => {
+    if (reduce.matches) { cur.rx = tar.rx; cur.ry = tar.ry; paint(); return; }
+    if (!raf) raf = requestAnimationFrame(frame);
+  };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  stage.addEventListener('pointermove', (e) => {
+    if (reduce.matches) return;
+    const r = stage.getBoundingClientRect();
+    const nx = (e.clientX - r.left) / r.width - 0.5;
+    const ny = (e.clientY - r.top) / r.height - 0.5;
+    tar.ry = REST.ry + nx * 36; tar.rx = REST.rx - ny * 28; kick();
+  });
+  const reset = () => { tar.rx = REST.rx; tar.ry = REST.ry; kick(); };
+  stage.addEventListener('pointerleave', reset);
+  stage.addEventListener('keydown', (e) => {
+    const step = 6;
+    if (e.key === 'ArrowLeft')  tar.ry = clamp(tar.ry - step, -50, 30);
+    else if (e.key === 'ArrowRight') tar.ry = clamp(tar.ry + step, -50, 30);
+    else if (e.key === 'ArrowUp')    tar.rx = clamp(tar.rx + step, -20, 40);
+    else if (e.key === 'ArrowDown')  tar.rx = clamp(tar.rx - step, -20, 40);
+    else if (e.key === 'Escape') { reset(); return; }
+    else return;
+    e.preventDefault(); kick();
+  });
+
+  /* Pause all decorative animation while off-screen or in a background tab. */
+  let inView = true;
+  const sync = () => scene.classList.toggle('paused', !inView || document.hidden);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => { inView = en.isIntersecting; sync(); }, { threshold: 0 }).observe(stage);
+  }
+  document.addEventListener('visibilitychange', sync);
+})();
+
+/* ---------- Bento spotlight ---------- */
+$$('.cell').forEach((c) => {
+  c.addEventListener('pointermove', (e) => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+});
+
+/* ---------- Tabs (WAI-ARIA pattern with roving tabindex) ---------- */
+(() => {
+  const tabs = $$('[role="tab"]');
+  function select(tab, focus){
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      $('#' + t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t, false));
+    t.addEventListener('keydown', (e) => {
+      let n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') n = tabs[0];
+      else if (e.key === 'End') n = tabs[tabs.length - 1];
+      if (n) { e.preventDefault(); select(n, true); }
+    });
+  });
+})();
+
+/* ---------- Number formatting and counters ---------- */
+const nf = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+const inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+function countTo(el, to, fmt){
+  const from = Number(el.dataset.v || 0);
+  el.dataset.v = to;
+  cancelAnimationFrame(el._raf);
+  if (reduce.matches) { el.textContent = fmt(to); return; }
+  const t0 = performance.now(), dur = 700;
+  const step = (t) => {
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(from + (to - from) * e);
+    if (p < 1) el._raf = requestAnimationFrame(step);
+  };
+  el._raf = requestAnimationFrame(step);
+}
+
+/* ---------- Tabs (WAI-ARIA pattern with roving tabindex) ---------- */
+(() => {
+  const tabs = $$('[role="tab"]');
+  const fmts = { int: (v) => nf.format(v), inr: (v) => inr.format(v) };
+  let counted = false;
+  function runKpis(){
+    if (counted) return; counted = true;
+    $$('[data-count]').forEach((el) => { el.dataset.v = 0; countTo(el, Number(el.dataset.count), fmts[el.dataset.fmt]); });
+  }
+  function select(tab, focus){
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      $('#' + t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (tab.id === 'tab-earn') runKpis();
+    if (focus) tab.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t, false));
+    t.addEventListener('keydown', (e) => {
+      let n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') n = tabs[0];
+      else if (e.key === 'End') n = tabs[tabs.length - 1];
+      if (n) { e.preventDefault(); select(n, true); }
+    });
+  });
+})();
+
+/* ---------- Earnings planner (uses only what the visitor types) ---------- */
+(() => {
+  const g = (id) => $('#' + id);
+  const props = g('roi-props'), share = g('roi-share'), fee = g('roi-fee'), hrs = g('roi-hours');
+  const num = (el, max) => Math.min(max, Math.max(0, Number(el.value) || 0));
+  let timer;
+  function calc(){
+    const p = num(props, 1000), s = Number(share.value) / 100, f = num(fee, 1000000), h = num(hrs, 500);
+    $('#roi-share-out').textContent = share.value + '%';
+    const won = p * s, month = won * f, totalHours = won * h;
+    const perHour = totalHours > 0 ? month / totalHours : 0;
+    countTo(g('out-won'),   won,       (v) => v.toFixed(1));
+    countTo(g('out-hour'),  perHour,   (v) => inr.format(v));
+    countTo(g('out-month'), month,     (v) => inr.format(v));
+    countTo(g('out-year'),  month * 12, (v) => inr.format(v));
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      $('#roi-live').textContent = `Plan: ${won.toFixed(1)} projects won each month, ${inr.format(perHour)} per hour of work, ${inr.format(month)} each month, ${inr.format(month * 12)} each year.`;
+    }, 700);
+  }
+  [props, share, fee, hrs].forEach((el) => el.addEventListener('input', calc));
+  calc();
+})();
+
+/* ---------- Pricing toggle ---------- */
+(() => {
+  const sw = $('#billing-switch'), prices = $$('.price'), pers = $$('.plan .per');
+  function render(yearly){
+    sw.setAttribute('aria-checked', String(yearly));
+    prices.forEach((p, i) => {
+      const m = Number(p.dataset.monthly);
+      const shown = yearly ? Math.round(m * 10 / 12) : m;
+      p.textContent = inr.format(shown);
+      pers[i].textContent = yearly ? `per month, billed yearly as ${inr.format(m * 10)}` : 'per month';
+    });
+  }
+  sw.addEventListener('click', () => render(sw.getAttribute('aria-checked') !== 'true'));
+  render(false);
+})();
+
+/* ---------- Cookie consent (GDPR and DPDP style: opt-in, equal-weight choices, easy withdrawal) ---------- */
+(() => {
+  const KEY = 'fg_consent';
+  const banner = $('#cookie-banner'), panel = $('#ck-settings');
+  const toggle = $('#ck-toggle'), save = $('#ck-save'), box = $('#ck-analytics');
+  let consent = null;
+  try { consent = JSON.parse(store.get(KEY) || 'null'); } catch (e) { consent = null; }
+  let analyticsLoaded = false;
+
+  function loadAnalytics(){
+    if (analyticsLoaded || !CONFIG.analyticsSrc) return;
+    analyticsLoaded = true;
+    const s = document.createElement('script');
+    s.async = true; s.src = CONFIG.analyticsSrc;
+    if (CONFIG.analyticsDomain) s.dataset.domain = CONFIG.analyticsDomain;
+    document.head.appendChild(s);
+  }
+  function openPanel(open){
+    panel.hidden = !open; save.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  }
+  function show(focus){
+    box.checked = !!(consent && consent.analytics);
+    banner.hidden = false;
+    if (focus) { openPanel(true); $('#ck-title').focus({ preventScroll: false }); }
+  }
+  function decide(analytics){
+    const was = consent && consent.analytics;
+    consent = { policy: CONFIG.policyVersion, analytics: !!analytics, at: new Date().toISOString() };
+    store.set(KEY, JSON.stringify(consent));
+    banner.hidden = true; openPanel(false);
+    if (analytics) loadAnalytics();
+    else if (was || analyticsLoaded) announce('Analytics preference saved. Analytics stops completely the next time this page loads.');
+    else announce('Your choice has been saved. Optional analytics is off.');
+  }
+
+  $('#ck-accept').addEventListener('click', () => decide(true));
+  $('#ck-reject').addEventListener('click', () => decide(false));
+  save.addEventListener('click', () => decide(box.checked));
+  toggle.addEventListener('click', () => openPanel(panel.hidden));
+  $('#open-cookie-settings').addEventListener('click', () => show(true));
+
+  if (!consent) show(false);
+  else if (consent.analytics) loadAnalytics();
+})();
+
+/* ---------- Sign-up dialog + form ---------- */
+(() => {
+  const dlg = $('#demo-dialog'), form = $('#demo-form');
+  const roleEl = $('#f-role'), nameEl = $('#f-name'), emailEl = $('#f-email'), consentEl = $('#f-consent');
+  let plan = '';
+
+  function openDemo(p){
+    plan = p || '';
+    const note = $('#plan-note');
+    note.hidden = !plan; note.textContent = plan ? `Plan of interest: ${plan}` : '';
+    if (plan) roleEl.value = 'org';
+    syncConsent();
+    $('#dlg-form-wrap').hidden = false; $('#dlg-done').hidden = true;
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    (plan ? nameEl : roleEl).focus();
+  }
+  const close = () => { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); };
+
+  /* A parent consenting for a child says so in the consent sentence itself. */
+  function syncConsent(){
+    $('#consent-extra').textContent = roleEl.value === 'parent'
+      ? 'I confirm that I am the parent or lawful guardian of the teen and I give this consent on their behalf. ' : '';
+  }
+  roleEl.addEventListener('change', () => { syncConsent(); setErr(roleEl, 'err-role', ''); });
+
+  $$('[data-open-demo]').forEach((b) => b.addEventListener('click', () => openDemo(b.dataset.plan)));
+  $('#dlg-close').addEventListener('click', close);
+  $('#dlg-done-close').addEventListener('click', close);
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });   // click on backdrop
+
+  function setErr(input, errId, msg){
+    const err = $('#' + errId);
+    err.hidden = !msg; err.textContent = msg ? 'Error: ' + msg : '';
+    if (input) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    return !msg;
+  }
+  const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = nameEl.value.trim(), email = emailEl.value.trim(), role = roleEl.value;
+    const okRole = setErr(roleEl, 'err-role', role ? '' : 'Choose who you are.');
+    const okName = setErr(nameEl, 'err-name', name ? '' : 'Enter your full name.');
+    const okEmail = setErr(emailEl, 'err-email', !email ? 'Enter your email.' : (emailOk(email) ? '' : 'Enter an email in the form name@example.com.'));
+    const okConsent = setErr(consentEl, 'err-consent', consentEl.checked ? '' : 'Tick this box to agree, otherwise we cannot contact you.');
+    if (!(okRole && okName && okEmail && okConsent)) {
+      (!okRole ? roleEl : !okName ? nameEl : !okEmail ? emailEl : consentEl).focus();
+      return;
+    }
+
+    const btn = $('#f-submit');
+    btn.disabled = true; btn.textContent = 'Sending';
+    // The consent record is saved with the data so you can show what was agreed, by whom, and when.
+    const payload = {
+      name, email, role, plan,
+      consentContact: true,
+      consentGivenByGuardian: role === 'parent',
+      consentMarketing: $('#f-marketing').checked,
+      policyVersion: CONFIG.policyVersion,
+      consentedAt: new Date().toISOString()
+    };
+    let msg;
+    try {
+      if (CONFIG.formEndpoint) {
+        const res = await fetch(CONFIG.formEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (!res.ok) throw new Error('Request failed');
+        msg = 'Thank you. We have your details and will email you with the next steps.';
+      } else {
+        msg = 'Preview mode: no form endpoint is set, so nothing was sent or stored. Set CONFIG.formEndpoint to start receiving sign-ups.';
+      }
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Send my details';
+      setErr(emailEl, 'err-email', 'We could not send your details. Check your connection and try again.');
+      emailEl.focus();
+      return;
+    }
+    form.reset(); syncConsent(); btn.disabled = false; btn.textContent = 'Send my details';
+    $('#dlg-form-wrap').hidden = true;
+    $('#dlg-done').hidden = false;
+    $('#dlg-done-msg').textContent = msg;
+    $('#dlg-done-title').focus();
+  });
+  [nameEl, emailEl].forEach((el) => el.addEventListener('input', () => setErr(el, 'err-' + el.id.slice(2), '')));
+  consentEl.addEventListener('change', () => setErr(consentEl, 'err-consent', ''));
+})();
+
+/* ---------- System status (never shows "operational" unless a real status feed says so) ---------- */
+(async () => {
+  const link = $('#status-link'), text = $('#status-text');
+  const set = (state, label) => { link.dataset.state = state; text.textContent = 'System status: ' + label; };
+  if (CONFIG.statusPageUrl) link.href = CONFIG.statusPageUrl;
+  if (!CONFIG.statusApiUrl) { set('unknown', 'not connected yet'); return; }
+  try {
+    const res = await fetch(CONFIG.statusApiUrl, { cache: 'no-store' });
+    const data = await res.json();
+    const ind = data && data.status && data.status.indicator;
+    if (ind === 'none') set('ok', 'all systems operational');
+    else if (ind === 'minor') set('warn', 'partial disruption');
+    else if (ind === 'major' || ind === 'critical') set('bad', 'major outage');
+    else set('unknown', 'unavailable');
+  } catch (e) { set('unknown', 'unavailable, open the status page'); }
+})();
+
+})();
+</script>
+</body>
+</html>
